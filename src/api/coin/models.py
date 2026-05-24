@@ -1,0 +1,1 @@
+class Coin(base):

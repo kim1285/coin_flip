@@ -1,8 +1,12 @@
+from datetime import timezone, datetime
 from functools import lru_cache
 from typing import Annotated, AsyncGenerator
 
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker, AsyncEngine
+from pydantic import AwareDatetime
+from sqlalchemy import func, DateTime
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker, AsyncEngine, AsyncAttrs
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from config import SettingsDep
 
@@ -28,3 +32,29 @@ async def get_session(async_session_maker: DBSessionMakerDep) -> AsyncGenerator[
 
 
 DBSessionDep = Annotated[AsyncSession, Depends(get_session)]
+
+
+def utcnow() -> AwareDatetime:
+    return datetime.now(timezone.utc)
+
+
+class CreatedAtMixin:
+    created_at: Mapped[AwareDatetime] = mapped_column(
+        DateTime(timezone=True),
+        default=utcnow,
+        server_default=func.now(),
+        nullable=False,
+    )
+
+
+class UpdatedAtMixin:
+    updated_at: Mapped[AwareDatetime] = mapped_column(
+        DateTime(timezone=True),
+        default=utcnow,
+        server_default=func.now(),
+        nullable=False,
+    )
+
+
+class Base(AsyncAttrs, DeclarativeBase):
+    pass
