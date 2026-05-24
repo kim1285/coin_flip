@@ -34,6 +34,10 @@ async def get_session(async_session_maker: DBSessionMakerDep) -> AsyncGenerator[
 DBSessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 
+class Base(AsyncAttrs, DeclarativeBase):
+    pass
+
+
 def utcnow() -> AwareDatetime:
     return datetime.now(timezone.utc)
 
@@ -56,5 +60,5 @@ class UpdatedAtMixin:
     )
 
 
-class Base(AsyncAttrs, DeclarativeBase):
+class TimeMixin(CreatedAtMixin, UpdatedAtMixin):
     pass
