@@ -17,7 +17,10 @@ def get_async_session_maker(db_url) -> async_sessionmaker[AsyncSession]:
     return async_sessionmaker(engine)
 
 
-async def get_session(async_session_maker: async_sessionmaker[AsyncSession]) -> AsyncGenerator[AsyncSession]:
+DBSessionMakerDep = Annotated[async_sessionmaker[AsyncSession], Depends(get_async_session_maker)]
+
+
+async def get_session(async_session_maker: DBSessionMakerDep) -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
         yield session
 
