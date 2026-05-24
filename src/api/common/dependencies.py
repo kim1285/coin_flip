@@ -11,9 +11,7 @@ def get_lifespan():
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         settings = get_settings()
-        # connect to db, start db session pool
         engine = get_engine(settings.db_url)
         yield
         await engine.dispose()
-        # clean up db session pool and any connections
     return lifespan

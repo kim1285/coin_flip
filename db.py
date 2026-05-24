@@ -4,6 +4,8 @@ from typing import Annotated, AsyncGenerator
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker, AsyncEngine
 
+from config import SettingsDep
+
 
 @lru_cache
 def get_engine(db_url) -> AsyncEngine:
@@ -12,8 +14,8 @@ def get_engine(db_url) -> AsyncEngine:
 
 
 @lru_cache
-def get_async_session_maker(db_url) -> async_sessionmaker[AsyncSession]:
-    engine = get_engine(db_url)
+def get_async_session_maker(settings: SettingsDep) -> async_sessionmaker[AsyncSession]:
+    engine = get_engine(settings.db_url)
     return async_sessionmaker(engine)
 
 
