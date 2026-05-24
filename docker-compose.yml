@@ -1,0 +1,11 @@
+services:
+  db:
+    image: postgres
+    container_name: flip_coin_db
+    restart: always
+    environment:
+      POSTGRES_USER: kim1285
+      POSTGRES_PASSWORD: kim1285!
+      POSTGRES_DB: flip_coin_db
+    ports:
+      - "5432:5432"
