@@ -15,11 +15,13 @@ class CoinFlipResult(StrEnum):
 class User(Base, TimeMixin):
     __tablename__ = "users"
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    username: Mapped[str] = mapped_column(String, nullable=True, default=None)
 
 
 class Coin(Base, TimeMixin):
     __tablename__ = "coins"
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
 
 
 class CoinFlip(Base, TimeMixin):
